@@ -42,15 +42,19 @@ A vagrant-managed VM is used for hosting pulp officially provided docker images.
 
         curl -k --user admin:admin -X PUT https://pulpapi/pulp/api/v2/content/uploads/b57de43d-9a20-4814-93bf-ee0c90eafd29 --upload-file /opt/james-3.0_beta6-2.x86_64.rpm
 
-/pulp/api/v2/repositories/<repo_id>/actions/import_upload/
+    *POST /pulp/api/v2/repositories/<repo_id>/actions/import_upload/*
 
-{
-   "override_config": {},
-   "unit_type_id": "srpm",
-   "upload_id": "768b18c1-fef1-4443-bd5b-a4cc9bda3b03",
-   "unit_key": {},
-   "unit_metadata": {"checksum_type": null}
-}
+        echo '{"override_config": {}, "unit_type_id": "srpm", "upload_id": "b57de43d-9a20-4814-93bf-ee0c90eafd29", "unit_key": {}, "unit_metadata": {"checksum_type": null}}' | curl -d @- -k --user admin:admin -X POST https://pulpapi/pulp/api/v2/repositories/tested/actions/import_upload/
 
+    Or alternatively :
+
+        echo '{"override_config": {}, "unit_type_id": "srpm",
+                "upload_id": "b57de43d-9a20-4814-93bf-ee0c90eafd29", "unit_key": {},
+                "unit_metadata": {"checksum_type": null}}' \
+                | curl -d @- -k --user admin:admin -X POST https://pulpapi/pulp/api/v2/repositories/tested/actions/import_upload/
+
+    Received response:
+
+        {"spawned_tasks": [{"_href": "/pulp/api/v2/tasks/b2942634-ce52-4e48-9163-0f211b3ea4cf/", "task_id": "b2942634-ce52-4e48-9163-0f211b3ea4cf"}], "result": null, "error": null}
 
 202 - if the request for the import was accepted but postponed until later
