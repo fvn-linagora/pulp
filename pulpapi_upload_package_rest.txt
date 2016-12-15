@@ -1,0 +1,41 @@
+vagrant ssh
+
+sudo docker run --rm -it -v /vagrant:/opt --link pulpapi:pulpapi pulp/adm
+
+pulp-admin login -u admin -p admin
+pulp-admin rpm repo uploads rpm --repo-id tested -f /opt/james-3.0_beta6-2.x86_64.rpm
+pulp-admin rpm repo publish  run --repo-id tested
+
+
+
+sudo docker run -ti --rm --link pulpapi:pulpapi -v /vagrant:/opt centos:7 /bin/bash
+
+POST /pulp/api/v2/content/uploads/
+
+curl -k --user admin:admin -X POST https://localhost:1443/pulp/api/v2/content/uploads/
+curl -k --user admin:admin -X POST https://pulpapi/pulp/api/v2/content/up
+
+
+{
+ "_href": "/pulp/api/v2/content/uploads/cfb1fed0-752b-439e-aa68-fba68eababa3/",
+ "upload_id': "cfb1fed0-752b-439e-aa68-fba68eababa3"
+}
+
+{"upload_id": "b57de43d-9a20-4814-93bf-ee0c90eafd29", "_href": "/pulp/api/v2/content/uploads/b57de43d-9a20-4814-93bf-ee0c90eafd29/"}
+
+PUT /pulp/api/v2/content/uploads/<upload_id>/<offset/
+
+curl -k --user admin:admin -X PUT https://pulpapi/pulp/api/v2/content/uploads/b57de43d-9a20-4814-93bf-ee0c90eafd29 --upload-file /opt/james-3.0_beta6-2.x86_64.rpm
+
+/pulp/api/v2/repositories/<repo_id>/actions/import_upload/
+
+{
+   "override_config": {},
+   "unit_type_id": "srpm",
+   "upload_id": "768b18c1-fef1-4443-bd5b-a4cc9bda3b03",
+   "unit_key": {},
+   "unit_metadata": {"checksum_type": null}
+}
+
+
+202 - if the request for the import was accepted but postponed until later
